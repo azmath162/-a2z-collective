@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>A2Z Collective</title>
-  <meta name="description" content="A2Z Collective — Motorsport, Automotive, Wildlife & Urban Photography">
+  <meta name="description" content="A2Z Collective - Motorsport, Wildlife & Urban Photography">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -78,6 +78,13 @@ button { border: none; background: none; cursor: pointer; color: inherit; font-f
 .category-back svg { width: 14px; height: 14px; }
 .category-name { font-family: var(--font-display); font-size: clamp(2.6rem, 7vw, 5rem); letter-spacing: 0.04em; color: var(--white); margin-bottom: 0.5rem; }
 .category-desc { font-weight: 300; font-size: 0.95rem; color: var(--text-muted); max-width: 500px; margin: 0 auto; }
+
+.year-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 2px; padding: 0 2px 2px; }
+.year-card { position: relative; aspect-ratio: 4/3; overflow: hidden; cursor: pointer; background: var(--bg-card); display: flex; flex-direction: column; align-items: center; justify-content: center; transition: background 0.4s; }
+.year-card:hover { background: var(--bg-elevated); }
+.year-card-year { font-family: var(--font-display); font-size: clamp(3rem, 7vw, 4.5rem); color: var(--accent); letter-spacing: 0.04em; transition: transform 0.4s var(--ease-out); }
+.year-card:hover .year-card-year { transform: scale(1.08); }
+.year-card-count { font-size: 0.75rem; font-weight: 400; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-muted); margin-top: 0.3rem; }
 
 .gallery-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 2px; padding: 0 2px 2px; }
 .gallery-card { position: relative; aspect-ratio: 16/10; overflow: hidden; cursor: pointer; background: var(--bg-card); display: block; }
@@ -161,17 +168,7 @@ button { border: none; background: none; cursor: pointer; color: inherit; font-f
   <footer id="site-footer"><div class="footer-inner"><p class="footer-copy" id="footer-text"></p><div class="footer-social" id="footer-social"></div></div></footer>
 
 <script>
-/*
- * ════════════════════════════════════════════════════════════
- *  A2Z COLLECTIVE — SITE CONFIG
- * ════════════════════════════════════════════════════════════
- *  AUTOMATED: Just create folders and drop images in.
- *  Then double-click deploy.ps1 to publish.
- *
- *  Optional: Add _meta.json to any gallery folder for
- *  custom title, date, description, or video embeds.
- * ════════════════════════════════════════════════════════════
- */
+/* AUTO_CONFIG_START */
 var SITE_CONFIG = {
   name: "A2Z Collective",
   tagline: "Motorsport \u00b7 Wildlife \u00b7 Urban",
@@ -184,26 +181,37 @@ var SITE_CONFIG = {
       name: "GRIDLIFE",
       description: "Touring Cup racing and the culture of Gridlife",
       cover: "images/gridlife/_cover.jpg",
-      galleries: [
+      yearGrouped: true,
+      years: [
         {
-          id: "2024-mid-ohio",
-          title: "2024 Mid-Ohio",
-          date: "2024-03-17",
-          description: "GLTC",
-          folder: "images/gridlife/2024 Mid-Ohio",
-          cover: "images/gridlife/2024 Mid-Ohio/DH915893.jpg",
-          images: ["DH915893.jpg","DH915991.jpg","DH915993.jpg","DH915995.jpg","XJ3_0026.jpg","XJ3_0030.jpg","XJ3_0125.jpg","XJ3_0139.jpg","XJ3_0510.jpg","XJ3_0515.jpg","XJ3_0534.jpg","XJ3_0551.jpg","XJ3_0587.jpg","XJ3_0590.jpg","XJ3_0604.jpg","XJ3_9847.jpg","XJ3_9918.jpg","XJ3_9956.jpg","XJ3_9986.jpg"],
-          videos: [{ url: "https://www.youtube.com/watch?v=WZM98D20Mkw", title: "Race 4" }]
+          year: "2025",
+          galleries: [
+            {
+              id: "laguna-seca",
+              title: "2025 Laguna Seca",
+              date: "2024-10-15",
+              description: "GLTC/Track Mod",
+              folder: "images/gridlife/2025/Laguna Seca",
+              cover: "images/gridlife/2025/Laguna Seca/DSC00075.jpg",
+              images: ["DSC00075.jpg","DSC00137.jpg","DSC00190.jpg","DSC00359.jpg","DSC00371.jpg","DSC00699.jpg","DSC00737.jpg","DSC00747.jpg","DSC00783.jpg","DSC00803.jpg","DSC00806.jpg","DSC00810.jpg","DSC00929.jpg","DSC01091.jpg","DSC01123.jpg","DSC01139.jpg","DSC01143.jpg","DSC01235.jpg","DSC01252.jpg","DSC01266.jpg","DSC01353.jpg","DSC01609.jpg","DSC01623.jpg","DSC01647.jpg","DSC01656.jpg","DSC01669.jpg","DSC01865.jpg","DSC01873.jpg","DSC01876.jpg","DSC01924.jpg","DSC01930.jpg","DSC01932.jpg","DSC01964.jpg","DSC02217.jpg","DSC02893.jpg","DSC02926.jpg","DSC02932-2.jpg","DSC03044.jpg","DSC03052.jpg","DSC03156.jpg","DSC03162.jpg","DSC03168.jpg","DSC03198.jpg","DSC03221.jpg","DSC03629.jpg","DSC03766.jpg","DSC03837.jpg","DSC03845.jpg","DSC03894.jpg","DSC03904.jpg","DSC03910.jpg","DSC04838.jpg","DSC04840.jpg","DSC04868.jpg","DSC04872.jpg","DSC04882.jpg","DSC04908.jpg","DSC04985.jpg","DSC04989.jpg","DSC05047.jpg","DSC05064.jpg","DSC05072.jpg","DSC05165.jpg","DSC06456.jpg","DSC06517.jpg","DSC06530.jpg","DSC06536.jpg","DSC06542.jpg","DSC06545.jpg","DSC06874.jpg","DSC06876.jpg","DSC06911.jpg","DSC06931.jpg","DSC07041.jpg","DSC07046.jpg","DSC07082.jpg","DSC07087.jpg","DSC07138.jpg","DSC07167.jpg","DSC07173.jpg","DSC07279.jpg","DSC07281.jpg","DSC07287.jpg","DSC07328.jpg","DSC07329.jpg","DSC07332.jpg","DSC09114.jpg","DSC09124.jpg","DSC09138.jpg","DSC09176.jpg","DSC09210.jpg","DSC09216.jpg"],
+              videos: [{ url: "https://youtu.be/JFG0gpXN3Dg", title: "GLTC Race 3" },{ url: "https://youtu.be/EgjfKhLuVJQ", title: "TrackBattle Q4" }]
+            }
+          ]
         },
         {
-          id: "2025-laguna-seca",
-          title: "2025 Laguna Seca",
-          date: "2024-10-15",
-          description: "GLTC/Track Mod",
-          folder: "images/gridlife/2025 Laguna Seca",
-          cover: "images/gridlife/2025 Laguna Seca/DSC00075.jpg",
-          images: ["DSC00075.jpg","DSC00137.jpg","DSC00190.jpg","DSC00359.jpg","DSC00371.jpg","DSC00699.jpg","DSC00737.jpg","DSC00747.jpg","DSC00783.jpg","DSC00803.jpg","DSC00806.jpg","DSC00810.jpg","DSC00929.jpg","DSC01091.jpg","DSC01123.jpg","DSC01139.jpg","DSC01143.jpg","DSC01235.jpg","DSC01252.jpg","DSC01266.jpg","DSC01353.jpg","DSC01609.jpg","DSC01623.jpg","DSC01647.jpg","DSC01656.jpg","DSC01669.jpg","DSC01865.jpg","DSC01873.jpg","DSC01876.jpg","DSC01924.jpg","DSC01930.jpg","DSC01932.jpg","DSC01964.jpg","DSC02217.jpg","DSC02893.jpg","DSC02926.jpg","DSC02932-2.jpg","DSC03044.jpg","DSC03052.jpg","DSC03156.jpg","DSC03162.jpg","DSC03168.jpg","DSC03198.jpg","DSC03221.jpg","DSC03629.jpg","DSC03766.jpg","DSC03837.jpg","DSC03845.jpg","DSC03894.jpg","DSC03904.jpg","DSC03910.jpg","DSC04838.jpg","DSC04840.jpg","DSC04868.jpg","DSC04872.jpg","DSC04882.jpg","DSC04908.jpg","DSC04985.jpg","DSC04989.jpg","DSC05047.jpg","DSC05064.jpg","DSC05072.jpg","DSC05165.jpg","DSC06456.jpg","DSC06517.jpg","DSC06530.jpg","DSC06536.jpg","DSC06542.jpg","DSC06545.jpg","DSC06874.jpg","DSC06876.jpg","DSC06911.jpg","DSC06931.jpg","DSC07041.jpg","DSC07046.jpg","DSC07082.jpg","DSC07087.jpg","DSC07138.jpg","DSC07167.jpg","DSC07173.jpg","DSC07279.jpg","DSC07281.jpg","DSC07287.jpg","DSC07328.jpg","DSC07329.jpg","DSC07332.jpg","DSC09114.jpg","DSC09124.jpg","DSC09138.jpg","DSC09176.jpg","DSC09210.jpg","DSC09216.jpg"],
-          videos: [{ url: "https://youtu.be/JFG0gpXN3Dg", title: "GLTC Race 3" },{ url: "https://youtu.be/EgjfKhLuVJQ", title: "TrackBattle Q4" }]
+          year: "2024",
+          galleries: [
+            {
+              id: "mid-ohio",
+              title: "2024 Mid-Ohio",
+              date: "2024-03-17",
+              description: "GLTC",
+              folder: "images/gridlife/2024/Mid-Ohio",
+              cover: "images/gridlife/2024/Mid-Ohio/DH915893.jpg",
+              images: ["DH915893.jpg","DH915991.jpg","DH915993.jpg","DH915995.jpg","XJ3_0026.jpg","XJ3_0030.jpg","XJ3_0125.jpg","XJ3_0139.jpg","XJ3_0510.jpg","XJ3_0515.jpg","XJ3_0534.jpg","XJ3_0551.jpg","XJ3_0587.jpg","XJ3_0590.jpg","XJ3_0604.jpg","XJ3_9847.jpg","XJ3_9918.jpg","XJ3_9956.jpg","XJ3_9986.jpg"],
+              videos: [{ url: "https://www.youtube.com/watch?v=WZM98D20Mkw", title: "Race 4" }]
+            }
+          ]
         }
       ]
     },
@@ -212,13 +220,15 @@ var SITE_CONFIG = {
       name: "Automobiles",
       description: "Automotive photography",
       cover: "images/automobiles/_cover.jpg",
-      galleries: []
+      yearGrouped: true,
+      years: []
     },
     {
       id: "wildlife",
       name: "Wildlife",
       description: "Wildlife encounters through the lens",
       cover: "images/wildlife/_cover.svg",
+      yearGrouped: false,
       galleries: []
     },
     {
@@ -226,11 +236,13 @@ var SITE_CONFIG = {
       name: "Urban",
       description: "City life, architecture, and street scenes",
       cover: "images/urban/_cover.svg",
+      yearGrouped: false,
       galleries: []
     }
   ]
   /* AUTO_CATEGORIES_END */
 };
+/* AUTO_CONFIG_END */
 
 (function () {
   "use strict";
@@ -241,6 +253,7 @@ var SITE_CONFIG = {
   var menuToggle = document.getElementById("menu-toggle");
   var footerText = document.getElementById("footer-text");
   var footerSocial = document.getElementById("footer-social");
+  var backSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> ';
 
   function init() { buildNav(); buildFooter(); bindEvents(); route(); }
 
@@ -290,34 +303,106 @@ var SITE_CONFIG = {
     });
   }
 
+  function countAllGalleries(cat) {
+    if (cat.yearGrouped) {
+      var total = 0;
+      (cat.years || []).forEach(function(y) { total += y.galleries.length; });
+      return total;
+    }
+    return (cat.galleries || []).length;
+  }
+
+  /* ── ROUTER ── */
   function route() {
     var hash = window.location.hash || "#/";
     var parts = hash.replace("#/", "").split("/").filter(Boolean);
     window.scrollTo(0, 0);
-    if (parts.length === 0) { renderHome(); setActiveNav("home"); }
-    else if (parts[0] === "category" && parts[1]) {
+
+    if (parts.length === 0) {
+      renderHome(); setActiveNav("home"); return;
+    }
+
+    if (parts[0] === "category" && parts[1]) {
       var cat = SITE_CONFIG.categories.find(function(c) { return c.id === parts[1]; });
-      if (parts[2]) {
-        var gal = cat && cat.galleries.find(function(g) { return g.id === parts[2]; });
-        if (gal) { renderGallery(cat, gal); setActiveNav(cat.id); } else renderHome();
-      } else if (cat) { renderCategory(cat); setActiveNav(cat.id); }
-      else { renderHome(); setActiveNav("home"); }
-    } else { renderHome(); setActiveNav("home"); }
+      if (!cat) { renderHome(); setActiveNav("home"); return; }
+
+      setActiveNav(cat.id);
+
+      if (cat.yearGrouped) {
+        if (parts[2] && parts[3]) {
+          var yr = (cat.years || []).find(function(y) { return y.year === parts[2]; });
+          var gal = yr && yr.galleries.find(function(g) { return g.id === parts[3]; });
+          if (gal) { renderGallery(cat, gal, parts[2]); return; }
+        }
+        if (parts[2]) {
+          var yr2 = (cat.years || []).find(function(y) { return y.year === parts[2]; });
+          if (yr2) { renderYearGalleries(cat, yr2); return; }
+        }
+        renderYears(cat); return;
+      } else {
+        if (parts[2]) {
+          var gal2 = (cat.galleries || []).find(function(g) { return g.id === parts[2]; });
+          if (gal2) { renderGallery(cat, gal2, null); return; }
+        }
+        renderCategory(cat); return;
+      }
+    }
+
+    renderHome(); setActiveNav("home");
   }
 
+  /* ── HOME ── */
   function renderHome() {
     var h = '<div class="page-enter"><section class="hero"><h1 class="hero-title">A<span style="color:var(--accent);display:inline-block;transform:scaleX(0.65) scaleY(0.75);font-size:0.75em;vertical-align:middle;margin:0 -0.02em;border-bottom:2px solid var(--accent);padding-bottom:1px;line-height:0.9">2</span>Z <span style="color:var(--text-soft)">Collective</span></h1><p class="hero-tagline">' + SITE_CONFIG.tagline + '</p><div class="hero-rule"></div></section><section class="category-grid">';
     SITE_CONFIG.categories.forEach(function(cat) {
-      var n = cat.galleries.length, t = n === 0 ? "Coming soon" : n + (n === 1 ? " gallery" : " galleries");
+      var n = countAllGalleries(cat);
+      var t = n === 0 ? "Coming soon" : n + (n === 1 ? " gallery" : " galleries");
       h += '<a href="#/category/' + cat.id + '" class="category-card reveal"><img class="category-card-img img-loading" data-src="' + cat.cover + '" alt="' + cat.name + '" onerror="this.style.display=\'none\'"><div class="category-card-overlay"><h2 class="category-card-title">' + cat.name + '</h2><p class="category-card-count">' + t + '</p></div><div class="category-card-arrow">\u2192</div></a>';
     });
     h += '</section></div>'; app.innerHTML = h; observeImages(); observeReveal();
   }
 
+  /* ── YEAR CARDS (for yearGrouped categories) ── */
+  function renderYears(cat) {
+    var years = (cat.years || []).slice().sort(function(a, b) { return b.year.localeCompare(a.year); });
+    var h = '<div class="page-enter"><section class="category-header"><a href="#/" class="category-back">' + backSvg + 'All Categories</a><h1 class="category-name">' + cat.name + '</h1><p class="category-desc">' + cat.description + '</p></section>';
+
+    if (years.length === 0) {
+      h += '<div class="empty-state"><div class="empty-state-icon">&#128247;</div><p class="empty-state-text">No galleries yet.</p></div>';
+    } else {
+      h += '<section class="year-grid">';
+      years.forEach(function(yr) {
+        var n = yr.galleries.length;
+        var t = n + (n === 1 ? " gallery" : " galleries");
+        h += '<a href="#/category/' + cat.id + '/' + yr.year + '" class="year-card reveal"><span class="year-card-year">' + yr.year + '</span><span class="year-card-count">' + t + '</span></a>';
+      });
+      h += '</section>';
+    }
+    h += '</div>'; app.innerHTML = h; observeImages(); observeReveal();
+  }
+
+  /* ── GALLERIES WITHIN A YEAR ── */
+  function renderYearGalleries(cat, yr) {
+    var h = '<div class="page-enter"><section class="category-header"><a href="#/category/' + cat.id + '" class="category-back">' + backSvg + cat.name + '</a><h1 class="category-name">' + cat.name + ' <span style="color:var(--accent)">' + yr.year + '</span></h1></section>';
+
+    if (yr.galleries.length === 0) {
+      h += '<div class="empty-state"><div class="empty-state-icon">&#128247;</div><p class="empty-state-text">No galleries yet for ' + yr.year + '.</p></div>';
+    } else {
+      h += '<section class="gallery-list">';
+      yr.galleries.forEach(function(g) {
+        var d = g.date ? formatDate(g.date) : "";
+        h += '<a href="#/category/' + cat.id + '/' + yr.year + '/' + g.id + '" class="gallery-card reveal"><img class="gallery-card-img img-loading" data-src="' + g.cover + '" alt="' + g.title + '" onerror="this.style.display=\'none\'"><div class="gallery-card-overlay"><h3 class="gallery-card-title">' + g.title + '</h3>' + (d ? '<p class="gallery-card-date">' + d + '</p>' : '') + '</div></a>';
+      });
+      h += '</section>';
+    }
+    h += '</div>'; app.innerHTML = h; observeImages(); observeReveal();
+  }
+
+  /* ── CATEGORY (non-yearGrouped) ── */
   function renderCategory(cat) {
-    var h = '<div class="page-enter"><section class="category-header"><a href="#/" class="category-back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> All Categories</a><h1 class="category-name">' + cat.name + '</h1><p class="category-desc">' + cat.description + '</p></section>';
-    if (cat.galleries.length === 0) {
-      h += '<div class="empty-state"><div class="empty-state-icon">\ud83d\udcf7</div><p class="empty-state-text">No galleries yet.<br>Add a gallery folder to <code>images/' + cat.id + '/</code> and update the config in <code>index.html</code>.</p></div>';
+    var h = '<div class="page-enter"><section class="category-header"><a href="#/" class="category-back">' + backSvg + 'All Categories</a><h1 class="category-name">' + cat.name + '</h1><p class="category-desc">' + cat.description + '</p></section>';
+    if ((cat.galleries || []).length === 0) {
+      h += '<div class="empty-state"><div class="empty-state-icon">&#128247;</div><p class="empty-state-text">No galleries yet.</p></div>';
     } else {
       h += '<section class="gallery-list">';
       cat.galleries.forEach(function(g) {
@@ -329,9 +414,12 @@ var SITE_CONFIG = {
     h += '</div>'; app.innerHTML = h; observeImages(); observeReveal();
   }
 
-  function renderGallery(cat, gal) {
+  /* ── GALLERY (images) ── */
+  function renderGallery(cat, gal, yearStr) {
+    var backUrl = cat.yearGrouped ? "#/category/" + cat.id + "/" + yearStr : "#/category/" + cat.id;
+    var backLabel = cat.yearGrouped ? cat.name + " " + yearStr : cat.name;
     var d = gal.date ? formatDate(gal.date) : "";
-    var h = '<div class="page-enter"><section class="gallery-header"><a href="#/category/' + cat.id + '" class="category-back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> ' + cat.name + '</a><h1 class="gallery-title">' + gal.title + '</h1>' + (d ? '<p class="gallery-date">' + d + '</p>' : '') + (gal.description ? '<p class="gallery-description">' + gal.description + '</p>' : '') + '</section>';
+    var h = '<div class="page-enter"><section class="gallery-header"><a href="' + backUrl + '" class="category-back">' + backSvg + backLabel + '</a><h1 class="gallery-title">' + gal.title + '</h1>' + (d ? '<p class="gallery-date">' + d + '</p>' : '') + (gal.description ? '<p class="gallery-description">' + gal.description + '</p>' : '') + '</section>';
     if (gal.videos && gal.videos.length > 0) {
       h += '<section class="video-section">';
       gal.videos.forEach(function(v) { var u = getEmbedUrl(v.url); if (u) h += '<div class="video-embed"><iframe src="' + u + '" allowfullscreen loading="lazy"></iframe></div>' + (v.title ? '<p class="video-title">' + v.title + '</p>' : ''); });
@@ -345,11 +433,12 @@ var SITE_CONFIG = {
       });
       h += '</section>';
     } else {
-      h += '<div class="empty-state"><div class="empty-state-icon">\ud83d\udcf7</div><p class="empty-state-text">No images yet.</p></div>';
+      h += '<div class="empty-state"><div class="empty-state-icon">&#128247;</div><p class="empty-state-text">No images yet.</p></div>';
     }
     h += '</div>'; app.innerHTML = h; window._currentGallery = gal; observeImages(); observeReveal();
   }
 
+  /* ── LIGHTBOX ── */
   var lbIndex = 0;
   window.A2Z = { openLightbox: function(i) { var g = window._currentGallery; if (!g || !g.images) return; lbIndex = i; showLB(); document.getElementById("lightbox").classList.add("open"); document.body.style.overflow = "hidden"; } };
   function showLB() {
