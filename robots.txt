@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://a2z-collective.pages.dev/sitemap.xml

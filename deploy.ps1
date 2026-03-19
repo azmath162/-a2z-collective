@@ -307,6 +307,46 @@ if ($html -match $pattern) {
 }
 
 Write-Host ""
+Write-Host "  Generating sitemap..." -ForegroundColor Cyan
+
+$siteUrl = "https://a2z-collective.pages.dev"
+$today = Get-Date -Format "yyyy-MM-dd"
+$sitemapLines = @()
+$sitemapLines += '<?xml version="1.0" encoding="UTF-8"?>'
+$sitemapLines += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
+$sitemapLines += "  <url><loc>$siteUrl/</loc><lastmod>$today</lastmod><priority>1.0</priority></url>"
+$sitemapLines += "  <url><loc>$siteUrl/#/contact</loc><lastmod>$today</lastmod><priority>0.5</priority></url>"
+
+foreach ($cat in $yearGroupedCats) {
+    $catId = $cat.id
+    $catPath = "images/$catId"
+    $sitemapLines += "  <url><loc>$siteUrl/#/category/$catId</loc><lastmod>$today</lastmod><priority>0.8</priority></url>"
+
+    if (Test-Path $catPath) {
+        $yearFolders = Get-ChildItem -Path $catPath -Directory | Where-Object { $_.Name -match '^\d{4}$' } | Sort-Object Name -Descending
+        foreach ($yearFolder in $yearFolders) {
+            $yearName = $yearFolder.Name
+            $sitemapLines += "  <url><loc>$siteUrl/#/category/$catId/$yearName</loc><lastmod>$today</lastmod><priority>0.7</priority></url>"
+
+            $subfolders = Get-ChildItem -Path $yearFolder.FullName -Directory | Sort-Object Name
+            foreach ($folder in $subfolders) {
+                $gId = ($folder.Name -replace '\s+', '-').ToLower()
+                $sitemapLines += "  <url><loc>$siteUrl/#/category/$catId/$yearName/$gId</loc><lastmod>$today</lastmod><priority>0.6</priority></url>"
+            }
+        }
+    }
+}
+
+$sitemapLines += '</urlset>'
+$sitemapContent = $sitemapLines -join "`n"
+[System.IO.File]::WriteAllText((Join-Path $PSScriptRoot "sitemap.xml"), $sitemapContent, [System.Text.UTF8Encoding]::new($false))
+
+$robotsContent = "User-agent: *`nAllow: /`nSitemap: $siteUrl/sitemap.xml"
+[System.IO.File]::WriteAllText((Join-Path $PSScriptRoot "robots.txt"), $robotsContent, [System.Text.UTF8Encoding]::new($false))
+
+Write-Host "  sitemap.xml and robots.txt updated!" -ForegroundColor Green
+
+Write-Host ""
 Write-Host "  Pushing to GitHub..." -ForegroundColor Cyan
 
 git add -A
