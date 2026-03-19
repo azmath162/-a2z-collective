@@ -122,6 +122,78 @@ if ($resizeCount -gt 0) {
 }
 Write-Host ""
 
+# ── GENERATE BLUR-UP THUMBNAILS ──
+Write-Host "  Generating blur-up thumbnails..." -ForegroundColor Cyan
+$thumbCount = 0
+$thumbSize = 40
+
+function Generate-Thumbnail($filePath, $thumbPath) {
+    try {
+        $img = [System.Drawing.Image]::FromFile($filePath)
+        $w = $img.Width
+        $h = $img.Height
+        if ($w -ge $h) {
+            $newW = $thumbSize
+            $newH = [int]([Math]::Round($h * ($thumbSize / $w)))
+        } else {
+            $newH = $thumbSize
+            $newW = [int]([Math]::Round($w * ($thumbSize / $h)))
+        }
+        if ($newW -lt 1) { $newW = 1 }
+        if ($newH -lt 1) { $newH = 1 }
+
+        $bmp = New-Object System.Drawing.Bitmap($newW, $newH)
+        $graphics = [System.Drawing.Graphics]::FromImage($bmp)
+        $graphics.InterpolationMode = [System.Drawing.Drawing2D.InterpolationMode]::Bilinear
+        $graphics.DrawImage($img, 0, 0, $newW, $newH)
+        $img.Dispose()
+
+        $encoder = [System.Drawing.Imaging.ImageCodecInfo]::GetImageEncoders() | Where-Object { $_.MimeType -eq "image/jpeg" }
+        $encoderParams = New-Object System.Drawing.Imaging.EncoderParameters(1)
+        $encoderParams.Param[0] = New-Object System.Drawing.Imaging.EncoderParameter([System.Drawing.Imaging.Encoder]::Quality, [long]30)
+
+        $bmp.Save($thumbPath, $encoder, $encoderParams)
+        $graphics.Dispose()
+        $bmp.Dispose()
+        $encoderParams.Dispose()
+        return $true
+    } catch {
+        return $false
+    }
+}
+
+$allGalleryFolders = Get-ChildItem -Path "images" -Recurse -Directory -ErrorAction SilentlyContinue
+foreach ($folder in $allGalleryFolders) {
+    if ($folder.Name -eq "_thumbs") { continue }
+    if ($folder.Name -match '^\d{4}$') { continue }
+    if ($folder.Name -eq "gridlife" -or $folder.Name -eq "automobiles" -or $folder.Name -eq "wildlife" -or $folder.Name -eq "urban") { continue }
+
+    $hasImages = $false
+    foreach ($ext in @("*.jpg", "*.jpeg")) {
+        if (Get-ChildItem -Path $folder.FullName -Filter $ext -File -ErrorAction SilentlyContinue) { $hasImages = $true; break }
+    }
+    if (-not $hasImages) { continue }
+
+    $thumbDir = Join-Path $folder.FullName "_thumbs"
+    if (-not (Test-Path $thumbDir)) { New-Item -ItemType Directory -Path $thumbDir -Force | Out-Null }
+
+    foreach ($ext in @("*.jpg", "*.jpeg")) {
+        $files = Get-ChildItem -Path $folder.FullName -Filter $ext -File -ErrorAction SilentlyContinue
+        foreach ($file in $files) {
+            $thumbPath = Join-Path $thumbDir $file.Name
+            if (Test-Path $thumbPath) { continue }
+            $result = Generate-Thumbnail $file.FullName $thumbPath
+            if ($result) { $thumbCount++ }
+        }
+    }
+}
+
+if ($thumbCount -gt 0) {
+    Write-Host "  Generated $thumbCount blur-up thumbnails" -ForegroundColor Green
+} else {
+    Write-Host "  All thumbnails up to date" -ForegroundColor DarkGray
+}
+
 # ── HELPER FUNCTIONS ──
 function Get-CoverFile($path) {
     if (Test-Path "$path/_cover.jpg") { return "$path/_cover.jpg" }

@@ -111,6 +111,12 @@ button { border: none; background: none; cursor: pointer; color: inherit; font-f
 .masonry-item:hover img { transform: scale(1.03); filter: brightness(1); }
 .masonry-item-caption { position: absolute; bottom: 0; left: 0; right: 0; padding: 2rem 1rem 1rem; background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 100%); font-size: 0.75rem; font-weight: 400; letter-spacing: 0.08em; color: rgba(255,255,255,0.8); opacity: 0; transform: translateY(8px); transition: all 0.3s var(--ease-out); }
 .masonry-item:hover .masonry-item-caption { opacity: 1; transform: translateY(0); }
+
+.masonry-item .blur-placeholder { position: absolute; inset: 0; background-size: cover; background-position: center; filter: blur(20px); transform: scale(1.1); transition: opacity 0.5s var(--ease-out); z-index: 1; }
+.masonry-item .blur-placeholder.loaded { opacity: 0; pointer-events: none; }
+.masonry-item img { position: relative; z-index: 2; }
+
+.zoom-lens { position: fixed; width: 200px; height: 200px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.15); background-repeat: no-repeat; pointer-events: none; z-index: 150; opacity: 0; transition: opacity 0.2s; box-shadow: 0 4px 24px rgba(0,0,0,0.5); display: none; }
 @media (max-width: 1024px) { .masonry { column-count: 2; } }
 @media (max-width: 600px) { .masonry { column-count: 1; } }
 
@@ -183,6 +189,7 @@ button { border: none; background: none; cursor: pointer; color: inherit; font-f
   </header>
   <div id="mobile-menu"><nav><a href="#/" class="nav-link" data-section="home">Portfolio</a><a href="#/contact" class="nav-link" data-section="contact">Contact</a></nav></div>
   <main id="app"></main>
+  <div class="zoom-lens" id="zoom-lens"></div>
   <div id="lightbox" class="lightbox" aria-hidden="true">
     <div class="lb-toolbar">
       <button class="lb-btn" id="lb-slideshow" aria-label="Slideshow" title="Slideshow"><svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><polygon points="5,3 19,12 5,21"/></svg></button>
@@ -224,7 +231,7 @@ var SITE_CONFIG = {
           galleries: [
             {
               id: "laguna-seca",
-              title: "2025 Laguna Seca",
+              title: "Laguna Seca",
               date: "2024-10-15",
               description: "GLTC/Track Mod",
               folder: "images/gridlife/2025/Laguna Seca",
@@ -249,7 +256,7 @@ var SITE_CONFIG = {
             },
             {
               id: "mid-ohio",
-              title: "2024 Mid-Ohio",
+              title: "Mid-Ohio",
               date: "2024-03-17",
               description: "GLTC",
               folder: "images/gridlife/2024/Mid-Ohio",
@@ -470,8 +477,10 @@ var SITE_CONFIG = {
     if (gal.images && gal.images.length > 0) {
       h += '<section class="masonry">';
       gal.images.forEach(function(img, i) {
-        var src = gal.folder + '/' + img, cap = filenameToCaption(img);
-        h += '<div class="masonry-item reveal" onclick="A2Z.openLightbox(' + i + ')"><img class="img-loading" data-src="' + src + '" alt="' + cap + '">' + (cap ? '<div class="masonry-item-caption">' + cap + '</div>' : '') + '</div>';
+        var src = gal.folder + '/' + img;
+        var thumbSrc = gal.folder + '/_thumbs/' + img;
+        var cap = filenameToCaption(img);
+        h += '<div class="masonry-item reveal" data-full="' + src + '" onclick="A2Z.openLightbox(' + i + ')"><div class="blur-placeholder" style="background-image:url(' + thumbSrc + ')"></div><img class="img-loading" data-src="' + src + '" alt="' + cap + '">' + (cap ? '<div class="masonry-item-caption">' + cap + '</div>' : '') + '</div>';
       });
       h += '</section>';
     } else {
@@ -654,9 +663,52 @@ var SITE_CONFIG = {
 
   function observeImages() {
     var imgs = document.querySelectorAll("img[data-src]");
-    var obs = new IntersectionObserver(function(entries) { entries.forEach(function(e) { if (e.isIntersecting) { var img = e.target; img.src = img.dataset.src; img.removeAttribute("data-src"); img.classList.remove("img-loading"); img.addEventListener("load", function() { img.classList.add("img-loaded"); }, { once: true }); obs.unobserve(img); } }); }, { rootMargin: "200px" });
+    var obs = new IntersectionObserver(function(entries) { entries.forEach(function(e) { if (e.isIntersecting) { var img = e.target; img.src = img.dataset.src; img.removeAttribute("data-src"); img.classList.remove("img-loading"); img.addEventListener("load", function() { img.classList.add("img-loaded"); var blur = img.parentElement.querySelector(".blur-placeholder"); if (blur) blur.classList.add("loaded"); }, { once: true }); obs.unobserve(img); } }); }, { rootMargin: "200px" });
     imgs.forEach(function(img) { obs.observe(img); });
   }
+
+  /* ── HOVER ZOOM ── */
+  var zoomLens = document.getElementById("zoom-lens");
+  var zoomScale = 2.5;
+  var isTouch = "ontouchstart" in window;
+
+  function initZoom() {
+    if (isTouch) return;
+    document.addEventListener("mousemove", function(e) {
+      var item = e.target.closest(".masonry-item");
+      if (!item) { zoomLens.style.opacity = "0"; zoomLens.style.display = "none"; return; }
+      var fullSrc = item.dataset.full;
+      if (!fullSrc) { zoomLens.style.opacity = "0"; return; }
+      var img = item.querySelector("img");
+      if (!img || !img.complete || !img.naturalWidth) { return; }
+
+      zoomLens.style.display = "block";
+      var rect = img.getBoundingClientRect();
+      var x = (e.clientX - rect.left) / rect.width;
+      var y = (e.clientY - rect.top) / rect.height;
+      x = Math.max(0, Math.min(1, x));
+      y = Math.max(0, Math.min(1, y));
+
+      var bgW = rect.width * zoomScale;
+      var bgH = rect.height * zoomScale;
+      var bgX = -(x * bgW - 100);
+      var bgY = -(y * bgH - 100);
+
+      zoomLens.style.backgroundImage = "url(" + fullSrc + ")";
+      zoomLens.style.backgroundSize = bgW + "px " + bgH + "px";
+      zoomLens.style.backgroundPosition = bgX + "px " + bgY + "px";
+      zoomLens.style.left = (e.clientX - 100) + "px";
+      zoomLens.style.top = (e.clientY - 100) + "px";
+      zoomLens.style.opacity = "1";
+    });
+
+    document.addEventListener("mouseleave", function() {
+      zoomLens.style.opacity = "0";
+      zoomLens.style.display = "none";
+    });
+  }
+
+  initZoom();
 
   function observeReveal() {
     var items = document.querySelectorAll(".reveal");
