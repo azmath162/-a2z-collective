@@ -55,13 +55,39 @@ button { border: none; background: none; cursor: pointer; color: inherit; font-f
 @media (max-width: 768px) { #main-nav { display: none; } #menu-toggle { display: flex; } }
 
 #app { min-height: 100vh; padding-top: var(--nav-height); }
-.page-enter { animation: fadeInUp 0.6s var(--ease-out) forwards; }
-@keyframes fadeInUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+.page-enter { animation: fadeInUp 0.7s var(--ease-out) forwards; }
+.page-exit { animation: fadeOutDown 0.3s var(--ease-out) forwards; }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeOutDown { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-15px); } }
+
+/* Loading screen */
+#loader { position: fixed; inset: 0; background: var(--bg); z-index: 999; display: flex; align-items: center; justify-content: center; flex-direction: column; transition: opacity 0.6s var(--ease-out); }
+#loader.done { opacity: 0; pointer-events: none; }
+.loader-logo { display: flex; align-items: center; gap: 0; opacity: 0; }
+.loader-logo .ll-a, .loader-logo .ll-z { font-family: var(--font-display); font-size: clamp(3rem, 8vw, 5rem); color: var(--white); opacity: 0; transform: translateY(20px); }
+.loader-logo .ll-2 { font-family: var(--font-display); font-size: clamp(1.8rem, 4.5vw, 3rem); color: var(--accent); opacity: 0; transform: translateY(20px); display: inline-flex; flex-direction: column; align-items: center; margin: 0 1px; }
+.loader-logo .ll-2 span { border-bottom: 2px solid var(--accent); padding-bottom: 1px; line-height: 0.85; }
+.loader-logo .ll-coll { font-family: var(--font-body); font-weight: 700; font-size: clamp(1.4rem, 3.5vw, 2.2rem); color: var(--text-soft); opacity: 0; transform: translateY(20px); margin-left: 8px; letter-spacing: 0.03em; transform-origin: left; }
+.loader-line { width: 0; height: 1px; background: var(--accent); margin-top: 1.2rem; transition: width 0.8s var(--ease-out); }
+.loader-logo.animate { opacity: 1; }
+.loader-logo.animate .ll-a { animation: letterIn 0.5s 0.2s var(--ease-out) forwards; }
+.loader-logo.animate .ll-2 { animation: letterIn 0.5s 0.35s var(--ease-out) forwards; }
+.loader-logo.animate .ll-z { animation: letterIn 0.5s 0.5s var(--ease-out) forwards; }
+.loader-logo.animate .ll-coll { animation: letterIn 0.5s 0.7s var(--ease-out) forwards; }
+@keyframes letterIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Hero letter animation */
+.hero-title .hero-letter { display: inline-block; opacity: 0; transform: translateY(25px); }
+.hero-title .hero-letter.show { animation: heroLetterIn 0.5s var(--ease-out) forwards; }
+.hero-title .hero-space { display: inline-block; width: 0.25em; }
+.hero-tagline { font-weight: 300; font-size: clamp(0.85rem, 1.5vw, 1.05rem); letter-spacing: 0.25em; text-transform: uppercase; color: var(--teal); opacity: 0; transform: translateY(15px); transition: all 0.6s var(--ease-out); }
+.hero-tagline.show { opacity: 1; transform: translateY(0); }
+.hero-rule { width: 80px; height: 1px; background: var(--accent); margin: 2rem auto 0; transform: scaleX(0); transition: transform 0.8s var(--ease-out); }
+.hero-rule.show { transform: scaleX(1); }
+@keyframes heroLetterIn { from { opacity: 0; transform: translateY(25px); } to { opacity: 1; transform: translateY(0); } }
 
 .hero { padding: clamp(4rem, 12vh, 8rem) clamp(1.5rem, 4vw, 3rem) clamp(2rem, 6vh, 4rem); text-align: center; }
 .hero-title { font-family: var(--font-display); font-size: clamp(3.2rem, 10vw, 7rem); line-height: 0.95; letter-spacing: 0.04em; color: var(--white); margin-bottom: 1rem; }
-.hero-tagline { font-weight: 300; font-size: clamp(0.85rem, 1.5vw, 1.05rem); letter-spacing: 0.25em; text-transform: uppercase; color: var(--teal); }
-.hero-rule { width: 80px; height: 1px; background: var(--accent); margin: 2rem auto 0; }
 
 .category-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2px; padding: 0 2px 2px; }
 .category-card { position: relative; aspect-ratio: 4/3; overflow: hidden; cursor: pointer; background: var(--bg-card); display: block; }
@@ -191,6 +217,17 @@ button { border: none; background: none; cursor: pointer; color: inherit; font-f
 </style>
 </head>
 <body>
+  <!-- Loading Screen -->
+  <div id="loader">
+    <div class="loader-logo" id="loader-logo">
+      <span class="ll-a">A</span>
+      <span class="ll-2"><span>2</span></span>
+      <span class="ll-z">Z</span>
+      <span class="ll-coll">COLLECTIVE</span>
+    </div>
+    <div class="loader-line" id="loader-line"></div>
+  </div>
+
   <header id="site-header">
     <a href="#/" class="logo" aria-label="Home">A<span class="logo-2">2</span>Z<span class="logo-collective">Collective</span></a>
     <nav id="main-nav"><a href="#/" class="nav-link" data-section="home">Portfolio</a><a href="#/contact" class="nav-link nav-contact" data-section="contact">Contact</a></nav>
@@ -335,7 +372,7 @@ var SITE_CONFIG = {
   var footerSocial = document.getElementById("footer-social");
   var backSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> ';
 
-  function init() { buildNav(); buildFooter(); bindEvents(); route(); }
+  function init() { buildNav(); buildFooter(); bindEvents(); runLoader(function() { route(); }); }
 
   function buildNav() {
     var links = SITE_CONFIG.categories.map(function(c) {
@@ -413,13 +450,68 @@ var SITE_CONFIG = {
 
   /* ── HOME ── */
   function renderHome() {
-    var h = '<div class="page-enter"><section class="hero"><h1 class="hero-title">A<span style="color:var(--accent);display:inline-block;transform:scaleX(0.65) scaleY(0.75);font-size:0.75em;vertical-align:middle;margin:0 -0.02em;border-bottom:2px solid var(--accent);padding-bottom:1px;line-height:0.9">2</span>Z <span style="color:var(--text-soft)">Collective</span></h1><p class="hero-tagline">' + SITE_CONFIG.tagline + '</p><div class="hero-rule"></div></section><section class="category-grid">';
+    var heroLetters = '';
+    var text1 = 'A';
+    var text2 = '2';
+    var text3 = 'Z';
+    var text4 = 'Collective';
+    var delay = 0;
+    var baseDelay = window._loaderDone ? 0 : 0;
+
+    for (var i = 0; i < text1.length; i++) {
+      heroLetters += '<span class="hero-letter" style="animation-delay:' + (baseDelay + delay) + 'ms;color:var(--white)">' + text1[i] + '</span>';
+      delay += 50;
+    }
+    heroLetters += '<span class="hero-letter" style="animation-delay:' + (baseDelay + delay) + 'ms;color:var(--accent);display:inline-block;transform:scaleX(0.65) scaleY(0.75);font-size:0.75em;vertical-align:middle;margin:0 -0.02em;border-bottom:2px solid var(--accent);padding-bottom:1px;line-height:0.9">' + text2 + '</span>';
+    delay += 50;
+    for (var j = 0; j < text3.length; j++) {
+      heroLetters += '<span class="hero-letter" style="animation-delay:' + (baseDelay + delay) + 'ms;color:var(--white)">' + text3[j] + '</span>';
+      delay += 50;
+    }
+    heroLetters += '<span class="hero-space"></span>';
+    for (var k = 0; k < text4.length; k++) {
+      heroLetters += '<span class="hero-letter" style="animation-delay:' + (baseDelay + delay) + 'ms;color:var(--text-soft)">' + text4[k] + '</span>';
+      delay += 40;
+    }
+
+    var h = '<div class="page-enter"><section class="hero"><h1 class="hero-title">' + heroLetters + '</h1><p class="hero-tagline">' + SITE_CONFIG.tagline + '</p><div class="hero-rule"></div></section><section class="category-grid">';
     SITE_CONFIG.categories.forEach(function(cat) {
       var n = countAllGalleries(cat);
       var t = n === 0 ? "Coming soon" : n + (n === 1 ? " gallery" : " galleries");
       h += '<a href="#/category/' + cat.id + '" class="category-card reveal"><img class="category-card-img img-loading" data-src="' + cat.cover + '" alt="' + cat.name + '" onerror="this.style.display=\'none\'"><div class="category-card-overlay"><h2 class="category-card-title">' + cat.name + '</h2><p class="category-card-count">' + t + '</p></div><div class="category-card-arrow">\u2192</div></a>';
     });
     h += '</section></div>'; app.innerHTML = h; observeImages(); observeReveal();
+
+    setTimeout(function() {
+      var letters = document.querySelectorAll(".hero-letter");
+      letters.forEach(function(l) { l.classList.add("show"); });
+    }, 50);
+    setTimeout(function() {
+      var tl = document.querySelector(".hero-tagline");
+      if (tl) tl.classList.add("show");
+    }, delay + 200);
+    setTimeout(function() {
+      var rule = document.querySelector(".hero-rule");
+      if (rule) rule.classList.add("show");
+    }, delay + 400);
+  }
+
+  /* ── LOADING SCREEN ── */
+  window._loaderDone = false;
+  function runLoader(callback) {
+    var logo = document.getElementById("loader-logo");
+    var line = document.getElementById("loader-line");
+    var loader = document.getElementById("loader");
+    if (!loader || window._loaderDone) { callback(); return; }
+
+    logo.classList.add("animate");
+    setTimeout(function() { line.style.width = "80px"; }, 600);
+    setTimeout(function() {
+      loader.classList.add("done");
+      window._loaderDone = true;
+      setTimeout(function() { loader.style.display = "none"; }, 600);
+      callback();
+    }, 1800);
   }
 
   /* ── YEAR CARDS (for yearGrouped categories) ── */
