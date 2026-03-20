@@ -115,6 +115,16 @@ button { border: none; background: none; cursor: pointer; color: inherit; font-f
 .masonry-item .blur-placeholder { position: absolute; inset: 0; background-size: cover; background-position: center; filter: blur(20px); transform: scale(1.1); transition: opacity 0.5s var(--ease-out); z-index: 1; }
 .masonry-item .blur-placeholder.loaded { opacity: 0; pointer-events: none; }
 .masonry-item img { position: relative; z-index: 2; }
+
+.watermark { position: absolute; bottom: 12px; right: 12px; z-index: 3; pointer-events: none; display: flex; align-items: baseline; gap: 0; opacity: 0.4; white-space: nowrap; }
+.watermark .wm-a, .watermark .wm-z { font-family: var(--font-display); font-size: clamp(14px, 1.8vw, 22px); color: #fff; line-height: 1; }
+.watermark .wm-2 { font-family: var(--font-display); font-size: clamp(9px, 1.1vw, 14px); color: #f09020; line-height: 1; vertical-align: middle; border-bottom: 1px solid #f09020; margin: 0 -0.5px; padding-bottom: 0.5px; }
+.watermark .wm-coll { font-family: var(--font-body); font-weight: 700; font-size: clamp(10px, 1.4vw, 17px); color: #fff; letter-spacing: 0.03em; margin-left: 4px; transform: scaleX(0.9); transform-origin: left; }
+
+#lb-watermark { position: absolute; bottom: 60px; right: 24px; z-index: 205; display: flex; align-items: baseline; gap: 0; opacity: 0.35; white-space: nowrap; pointer-events: none; }
+#lb-watermark .wm-a, #lb-watermark .wm-z { font-family: var(--font-display); font-size: 28px; color: #fff; line-height: 1; }
+#lb-watermark .wm-2 { font-family: var(--font-display); font-size: 17px; color: #f09020; line-height: 1; vertical-align: middle; border-bottom: 2px solid #f09020; margin: 0 -0.5px; padding-bottom: 1px; }
+#lb-watermark .wm-coll { font-family: var(--font-body); font-weight: 700; font-size: 22px; color: #fff; letter-spacing: 0.03em; margin-left: 6px; transform: scaleX(0.9); transform-origin: left; }
 @media (max-width: 1024px) { .masonry { column-count: 2; } }
 @media (max-width: 600px) { .masonry { column-count: 1; } }
 
@@ -197,6 +207,7 @@ button { border: none; background: none; cursor: pointer; color: inherit; font-f
     <button class="lb-prev" aria-label="Previous">&#10094;</button>
     <button class="lb-next" aria-label="Next">&#10095;</button>
     <div class="lb-content"><img id="lb-img" src="" alt=""><div id="lb-caption"></div><div id="lb-counter"></div><div id="lb-slideshow-bar" class="lb-slideshow-bar"></div></div>
+    <div id="lb-watermark"><span class="wm-a">A</span><span class="wm-2">2</span><span class="wm-z">Z</span><span class="wm-coll">COLLECTIVE</span></div>
   </div>
   <footer id="site-footer"><div class="footer-inner"><p class="footer-copy" id="footer-text"></p><div class="footer-social" id="footer-social"></div></div></footer>
 
@@ -477,7 +488,7 @@ var SITE_CONFIG = {
         var src = gal.folder + '/' + img;
         var thumbSrc = gal.folder + '/_thumbs/' + img;
         var cap = filenameToCaption(img);
-        h += '<div class="masonry-item reveal" onclick="A2Z.openLightbox(' + i + ')"><div class="blur-placeholder" style="background-image:url(' + thumbSrc + ')"></div><img class="img-loading" data-src="' + src + '" alt="' + cap + '">' + (cap ? '<div class="masonry-item-caption">' + cap + '</div>' : '') + '</div>';
+        h += '<div class="masonry-item reveal" onclick="A2Z.openLightbox(' + i + ')"><div class="blur-placeholder" style="background-image:url(' + thumbSrc + ')"></div><img class="img-loading" data-src="' + src + '" alt="' + cap + '"><div class="watermark"><span class="wm-a">A</span><span class="wm-2">2</span><span class="wm-z">Z</span><span class="wm-coll">COLLECTIVE</span></div>' + (cap ? '<div class="masonry-item-caption">' + cap + '</div>' : '') + '</div>';
       });
       h += '</section>';
     } else {
