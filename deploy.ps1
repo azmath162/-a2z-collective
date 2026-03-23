@@ -17,7 +17,8 @@ $yearGroupedCats = @(
     @{ id = "gridlife"; name = "GRIDLIFE"; description = "Touring Cup racing and the culture of Gridlife" },
     @{ id = "automobiles"; name = "Automobiles"; description = "Automotive photography" },
     @{ id = "wildlife"; name = "Wildlife"; description = "Wildlife encounters through the lens" },
-    @{ id = "urban"; name = "Urban"; description = "City life, architecture, and street scenes" }
+    @{ id = "urban"; name = "Urban"; description = "City life, architecture, and street scenes" },
+    @{ id = "lemons"; name = "Lemons"; description = "Lemons Racing" }
 )
 
 $flatCats = @()
