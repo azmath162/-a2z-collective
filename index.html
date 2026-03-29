@@ -63,12 +63,14 @@ button { border: none; background: none; cursor: pointer; color: inherit; font-f
 /* Loading screen */
 #loader { position: fixed; inset: 0; background: var(--bg); z-index: 999; display: flex; align-items: center; justify-content: center; flex-direction: column; transition: opacity 0.6s var(--ease-out); }
 #loader.done { opacity: 0; pointer-events: none; }
-.loader-logo { display: flex; align-items: center; gap: 0; opacity: 0; }
+#loader-strip { position: absolute; top: 50%; left: 0; right: 0; height: 45%; transform: translateY(-50%); background: url('images/splash.jpg') center/cover no-repeat; opacity: 0; transition: opacity 1s var(--ease-out); }
+#loader-strip.show { opacity: 0.2; }
+.loader-logo { display: flex; align-items: center; gap: 0; opacity: 0; position: relative; z-index: 2; }
 .loader-logo .ll-a, .loader-logo .ll-z { font-family: var(--font-display); font-size: clamp(3rem, 8vw, 5rem); color: var(--white); opacity: 0; transform: translateY(20px); }
 .loader-logo .ll-2 { font-family: var(--font-display); font-size: clamp(1.3rem, 3.5vw, 2.2rem); color: var(--accent); opacity: 0; transform: translateY(20px); display: inline-flex; flex-direction: column; align-items: center; margin: 0 1px; }
 .loader-logo .ll-2 span { border-bottom: 2px solid var(--accent); padding-bottom: 1px; line-height: 0.85; }
 .loader-logo .ll-coll { font-family: var(--font-body); font-weight: 700; font-size: clamp(1.4rem, 3.5vw, 2.2rem); color: var(--text-soft); opacity: 0; transform: translateY(20px); margin-left: 8px; letter-spacing: 0.03em; transform-origin: left; }
-.loader-line { width: 0; height: 1px; background: var(--accent); margin-top: 1.2rem; transition: width 0.8s var(--ease-out); }
+.loader-line { width: 0; height: 1px; background: var(--accent); margin-top: 1.2rem; transition: width 0.8s var(--ease-out); position: relative; z-index: 2; }
 .loader-logo.animate { opacity: 1; }
 .loader-logo.animate .ll-a { animation: letterIn 0.5s 0.2s var(--ease-out) forwards; }
 .loader-logo.animate .ll-2 { animation: letterIn 0.5s 0.35s var(--ease-out) forwards; }
@@ -230,6 +232,7 @@ button { border: none; background: none; cursor: pointer; color: inherit; font-f
 <body>
   <!-- Loading Screen -->
   <div id="loader">
+    <div id="loader-strip"></div>
     <div class="loader-logo" id="loader-logo">
       <span class="ll-a">A</span>
       <span class="ll-2"><span>2</span></span>
@@ -553,16 +556,18 @@ var SITE_CONFIG = {
     var logo = document.getElementById("loader-logo");
     var line = document.getElementById("loader-line");
     var loader = document.getElementById("loader");
+    var strip = document.getElementById("loader-strip");
     if (!loader || window._loaderDone) { callback(); return; }
 
-    logo.classList.add("animate");
-    setTimeout(function() { line.style.width = "80px"; }, 600);
+    setTimeout(function() { if (strip) strip.classList.add("show"); }, 100);
+    setTimeout(function() { logo.classList.add("animate"); }, 300);
+    setTimeout(function() { line.style.width = "80px"; }, 900);
     setTimeout(function() {
       loader.classList.add("done");
       window._loaderDone = true;
       setTimeout(function() { loader.style.display = "none"; }, 600);
       callback();
-    }, 1800);
+    }, 2200);
   }
 
   /* ── YEAR CARDS (for yearGrouped categories) ── */
